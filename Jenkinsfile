@@ -2,7 +2,8 @@ pipeline {
   agent any
 
   environment {
-    DEPLOY_DIR = "DEPLOY_DIR = "C:/xampp/htdocs/gdsc"   // change if your XAMPP is elsewhere
+    DEPLOY_DIR = DEPLOY_DIR = "C:\\xampp\\htdocs\\gdsc"
+   // change if your XAMPP is elsewhere
     REPO_URL = 'https://github.com/RakeshMali003/gdsc.git'
     BRANCH = 'main' // or master
   }
