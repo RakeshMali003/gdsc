@@ -2,23 +2,21 @@ pipeline {
   agent any
 
   environment {
-    DEPLOY_DIR = DEPLOY_DIR = "C:\\xampp\\htdocs\\gdsc"
-   // change if your XAMPP is elsewhere
+    // Use double backslashes or forward slashes
+    DEPLOY_DIR = "C:/xampp/htdocs/gdsc"
     REPO_URL = 'https://github.com/RakeshMali003/gdsc.git'
-    BRANCH = 'main' // or master
+    BRANCH = 'main'
   }
 
   stages {
     stage('Checkout') {
       steps {
-        // For a public repo this works. If private, configure credentials and use credentialsId.
         git branch: "${BRANCH}", url: "${REPO_URL}"
       }
     }
 
     stage('Prepare deploy dir') {
       steps {
-        // Delete old files (be careful) then recreate folder
         bat """
         if exist "${DEPLOY_DIR}" (
           rmdir /S /Q "${DEPLOY_DIR}"
@@ -30,7 +28,6 @@ pipeline {
 
     stage('Copy files to webserver') {
       steps {
-        // Use robocopy for robust copy (excludes .git)
         bat """
         robocopy "%WORKSPACE%" "${DEPLOY_DIR}" /MIR /XD .git
         """
@@ -39,17 +36,17 @@ pipeline {
 
     stage('Notify') {
       steps {
-        echo "Deployed to ${DEPLOY_DIR}"
+        echo "✅ Deployment done to ${DEPLOY_DIR}"
       }
     }
   }
 
   post {
     success {
-      echo "Pipeline finished successfully."
+      echo "🎉 Build and Deployment successful!"
     }
     failure {
-      echo "Pipeline failed."
+      echo "❌ Build failed! Check console output."
     }
   }
 }
