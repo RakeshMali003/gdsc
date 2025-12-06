@@ -1,61 +1,304 @@
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <div class="footer-logo">
-                    
-                    <h2 class="gdg-gradient-text">GDG on Campus</h2>
-                </div>
-                <p>Connecting students with Google Developer technologies and building a community of passionate tech enthusiasts at Manipal University Jaipur.</p>
-                <div class="social-media">
-                    <a href="#" class="social-blue"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-red"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-yellow"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-green"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact Info</h3>
-                <div class="contact-info">
-                    <p><i class="fas fa-map-marker-alt"></i> Manipal University Jaipur, Rajasthan, India</p>
-                    <p><i class="fas fa-envelope"></i> gdgoncampus@muj.manipal.edu</p>
-                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
-                </div>
-            </div>
-            
-            <div class="footer-section quicklinks">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#events">Events</a></li>
-                    <li><a href="#team">Team</a></li>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section newsletter">
-                <h3>Subscribe</h3>
-                <p>Stay updated with our latest events and news</p>
-                <form>
-                    <input type="email" placeholder="Enter your email">
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-    
-            <p>© 2025 Google Developer Group on Campus - Manipal University Jaipur. All rights reserved.</p>
-
-<p>This website is not an official Google product. GDG on Campus is an independent group.</p>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDG Campus Floating Chatbot</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            min-height: 100vh;
+            position: relative;
+            padding: 20px;
+        }
+        .page-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4285f4;
+        }
+        p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        /* Chatbot Styles */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .chatbot-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        .chatbot-toggle img {
+            width: 32px;
+            height: 32px;
+        }
+        .chatbot-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 999;
+            transform: scale(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .chatbot-container.active {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        .chatbot-header {
+            background-color: #4285f4;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chatbot-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+        .chatbot-header img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .close-chat:hover {
+            opacity: 0.8;
+        }
+        .chatbot-status {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: #252525;
+            font-size: 0.8rem;
+            color: #aaa;
+            border-bottom: 1px solid #333;
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #121212;
+            display: flex;
+            flex-direction: column;
+        }
+        .message-wrapper {
+            display: flex;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .bot-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #4285f4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .message-content {
+            flex: 1;
+        }
+        .message-bubble {
+            padding: 10px 12px;
+            background-color: #2c2c2c;
+            border-radius: 18px;
+            border-top-left-radius: 5px;
+            color: #e0e0e0;
+            display: inline-block;
+            max-width: 100%;
+            word-break: break-word;
+        }
+        .user-wrapper {
+            justify-content: flex-end;
+        }
+        .user-wrapper .message-bubble {
+            background-color: #4285f4;
+            color: white;
+            border-radius: 18px;
+            border-top-right-radius: 5px;
+        }
+        .message-time {
+            font-size: 0.6rem;
+            color: #777;
+            margin-top: 4px;
+        }
+        .typing-indicator {
+            display: flex;
+            padding: 10px;
+            background-color: #2c2c2c;
+            border-radius: 18px;
+            border-top-left-radius: 5px;
+            width: fit-content;
+        }
+        .typing-indicator span {
+            height: 7px;
+            width: 7px;
+            background-color: #a0a0a0;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: bounce 1.3s linear infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+        .chatbot-input {
+            padding: 10px;
+            background-color: #252525;
+            border-top: 1px solid #333;
+            display: flex;
+        }
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 20px;
+            background-color: #333;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+        .chatbot-input input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.5);
+        }
+        .chatbot-input button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            margin-left: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chatbot-input button:hover {
+            background-color: #5295f5;
+        }
+        .suggestions {
+            display: flex;
+            padding: 10px;
+            background-color: #1a1a1a;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            scrollbar-color: #555 #1a1a1a;
+        }
+        .suggestions::-webkit-scrollbar {
+            height: 4px;
+        }
+        .suggestions::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .suggestions::-webkit-scrollbar-thumb {
+            background-color: #555;
+            border-radius: 20px;
+        }
+        .suggestion-chip {
+            background-color: #333;
+            color: #e0e0e0;
+            padding: 6px 12px;
+            border-radius: 15px;
+            margin-right: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            border: 1px solid #444;
+        }
+        .suggestion-chip:hover {
+            background-color: #444;
+            border-color: #555;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .new-message-animation {
+            animation: pulse 1s ease infinite;
+        }
+        @media (max-width: 600px) {
+            .chatbot-container {
+                width: calc(100% - 40px);
+                height: 60vh;
+                bottom: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Content (Sample) -->
+    <div class="page-content">
+        <h1>GDG Campus Community</h1>
+        <p>Welcome to the Google Developer Group Campus community. This is where students and developers connect to learn and grow together.</p>
+        <p>Explore our resources and upcoming events to enhance your development skills.</p>
     </div>
-</footer>
-  
+
     <!-- Chatbot Toggle Button -->
     <div class="chatbot-toggle" id="chatbot-toggle">
          <i class="fas fa-robot"></i>
@@ -65,11 +308,7 @@
     <!-- Chatbot Container -->
     <div class="chatbot-container" id="chatbot-container">
         <div class="chatbot-header">
-<<<<<<< HEAD
-            <h2><img src="./gdg-logo.png" alt="GDG Logo"> GDG Campus Assistant</h2>
-=======
-            <h2><img src="../gdsc/gdg-logo.png" alt="GDG Logo"> GDG Campus Assistant</h2>
->>>>>>> 6ba16ceea2a29dd0e02b8d6c296ecfc5a9b0034b
+            <h2><img src="/api/placeholder/24/24" alt="GDG Logo"> GDG Campus Assistant</h2>
             <button class="close-chat" id="close-chat">×</button>
         </div>
         <div class="chatbot-status">
@@ -370,5 +609,5 @@
             }
         }, 3000);
     </script>
-<script src="./script.js"></script>
+</body>
 </html>
